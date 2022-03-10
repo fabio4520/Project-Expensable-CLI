@@ -86,10 +86,18 @@ module Helper
   end 
 
   def categories_menu
-    a = ["create", "show ID", "update ID", "delete ID"].join(" | ")
-    b = ["add-to ID", "toggle", "next", "prev", "logout"].join(" | ")
-    puts a
-    puts b
+    a = ["create", "show ID", "update ID", "delete ID"]
+    b = ["add-to ID", "toggle", "next", "prev", "logout"]
+    action= ""
+    id = nil
+    options = (a.map{|string| string.delete(" ID")} + b.map{|string| string.delete(" ID")})
+
+    until options.include?(action)
+      puts [a.join(" | ") , b.join(" | ")].join("\n")
+      print "> "
+      action, id = gets.chomp.split
+    end
+    return action, id
   end
 
 end

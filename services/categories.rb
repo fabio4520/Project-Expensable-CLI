@@ -10,12 +10,12 @@ module Services
       header = {
         headers: { "Authorization": "Token token=#{token}" }
       }
-      response = post('/categories', header)
-      # raise HTTParty::ResponseError.new(response) unless response.success?
+      response = get('/categories', header)
+      raise HTTParty::ResponseError.new(response) unless response.success?
       JSON.parse(response.body, symbolize_names: true)
     end
 
-    
+
 
   end
 
