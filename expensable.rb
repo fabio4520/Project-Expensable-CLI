@@ -47,7 +47,6 @@ class Expensable
   def login
     credentials, validation = login_form
     @user = Services::Sessions.login(credentials)
-    # puts @user[] if @user.length == 1
     puts "Welcome back #{@user[:first_name]} #{@user[:last_name]}"
     categories_page
   end
@@ -55,6 +54,7 @@ class Expensable
   def create_user
     credentials= create_user_form
     @user = Services::Sessions.signup(credentials)
+    categories_page
   end
 
   def categories_page
@@ -77,35 +77,31 @@ class Expensable
     end
   end
 
-  def categories_table(category)
-    initial_date = Date.new(2021, 9, 1) # escogido arbitrariamente
-    initial_month = initial_date.month # Integer
-    transaction_type = "income"
+  def categories_table(category, initial_date = Date.new(2021, 12, 1), transaction_type = "expense")
+    # initial_date = Date.new(2021, 9, 1) # escogido arbitrariamente
+    initial_month = initial_date.month
     categories_show = []
     for arr in category
-      if arr[:transaction_type] == transaction_type
-        hash = {
-          id: arr[:id],
-          name: arr[:name],
-          transaction_type: arr[:transaction_type],
-          transactions: arr[:transactions].select do |trans|
-            trans[:date].split("-")[1].to_i == initial_month
-          end
-        }
-        categories_show << hash
-      end
+      hash = {
+        id: arr[:id],
+        name: arr[:name],
+        transaction_type: arr[:transaction_type],
+        transactions: arr[:transactions].select do |trans|
+          trans[:date].split("-")[1].to_i == initial_month
+        end
+      }
+      categories_show << hash if arr[:transaction_type] == transaction_type
     end
     categories_show.compact!
-    # pp arr_nuevo
-    # pp categories_show.compact!
-
     table = Terminal::Table.new
     table.title = "#{transaction_type.capitalize}s\n#{initial_date.strftime('%B %Y')}"
     table.headings = ['ID', 'Category' , 'Total']
-    table.rows = categories_show.map do |c|
-      [c[:id], c[:name], c[:transactions].map { |t| t[:amount] }.sum]
+    hola = []
+    categories_show.each do |c|
+      a = c[:transactions].map { |t| t[:amount] }.sum
+      hola << [c[:id], c[:name], a] unless a == 0
     end
-
+    table.rows = hola
     table
   end
 
