@@ -46,6 +46,9 @@ class Expensable
     @user = Services::Sessions.signup(credentials)
   end
 
+  def notes_page
+    @notes = Services::Categories.index(@user[:token])
+  end
 
 end
 
