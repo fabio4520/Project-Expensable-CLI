@@ -1,8 +1,16 @@
 # Start here. Happy coding!
 require_relative 'helpers/helper.rb'
+require_relative 'services/sessions.rb'
 
 class Expensable
   include Helper
+  
+  def initialize
+    @user = nil
+    @notes = []
+    @trash = false
+  end
+
   def start
     welcome
     option = ""
@@ -12,7 +20,7 @@ class Expensable
       option = gets.chomp
       case option
       when "login"
-        puts "login"
+        login
       when "create_user"
         puts "create_user"
       when "exit"
