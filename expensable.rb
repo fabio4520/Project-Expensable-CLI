@@ -12,9 +12,11 @@ class Expensable
 
   def start
     welcome
+    
     option = ""
     # option = gets.chomp
     until option == "exit"
+      options_menu
       print "> "
       option = gets.chomp
       case option
@@ -33,9 +35,8 @@ class Expensable
   private
 
   def create_user
-    credentials = create_user_form
-    @user = Services::Sessions.signup(credentials)
-    p @user
+    credentials, validation = create_user_form
+    @user = Services::Sessions.signup(credentials) if validation
   end
 
 
