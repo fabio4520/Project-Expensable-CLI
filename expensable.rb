@@ -4,25 +4,28 @@ require_relative 'services/sessions.rb'
 
 class Expensable
   include Helper
-  
+
   def initialize
     @user = nil
     @notes = []
     @trash = false
+
   end
 
   def start
     welcome
+    
     option = ""
     # option = gets.chomp
     until option == "exit"
+      options_menu
       print "> "
       option = gets.chomp
       case option
       when "login"
         login
       when "create_user"
-        puts "create_user"
+        puts create_user
       when "exit"
         goodbye
       else
@@ -30,6 +33,14 @@ class Expensable
       end
     end
   end
+
+  private
+
+  def create_user
+    credentials, validation = create_user_form
+    @user = Services::Sessions.signup(credentials) if validation
+  end
+
 
 end
 

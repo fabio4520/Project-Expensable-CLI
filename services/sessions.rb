@@ -2,12 +2,12 @@ require 'httparty'
 require 'json'
 
 module Services
+
   class Sessions
     include HTTParty
+    base_uri('https://expensable-api.herokuapp.com/')
 
-    base_uri("https://expensable-api.herokuapp.com/")
-
-    def self.login(credentials)
+  	def self.login(credentials)
       options = {
         headers: { "Content-Type": "application/json" },
         body: credentials.to_json
@@ -19,14 +19,15 @@ module Services
     end
 
     def self.signup(credentials)
-      options = {
+      header = {
         headers: { "Content-Type": "application/json" },
         body: credentials.to_json
       }
-  
-      response = post('/signup', options)
+      response = post('/signup', header)
       raise HTTParty::ResponseError.new(response) unless response.success?
       JSON.parse(response.body, symbolize_names: true)
     end
+
   end
 end
+
