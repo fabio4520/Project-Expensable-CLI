@@ -21,15 +21,20 @@ class Expensable
       options_menu
       print "> "
       option = gets.chomp
-      case option
-      when "login"
-        login
-      when "create_user"
-        puts create_user
-      when "exit"
-        goodbye
-      else
-        puts "Invalid option"
+      begin 
+        case option
+        when "login"
+          login
+        when "create_user"
+          puts create_user
+        when "exit"
+          goodbye
+        else
+          puts "Invalid option"
+        end
+      rescue HTTParty::ResponseError => error
+        parsed_error = JSON.parse(error.message, symbolize_names: true)
+        puts parsed_error[:errors]
       end
     end
   end
@@ -37,8 +42,8 @@ class Expensable
   private
 
   def create_user
-    credentials, validation = create_user_form
-    @user = Services::Sessions.signup(credentials) if validation
+    credentials= create_user_form
+    @user = Services::Sessions.signup(credentials)
   end
 
 

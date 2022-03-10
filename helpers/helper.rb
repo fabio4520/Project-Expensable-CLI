@@ -16,8 +16,9 @@ module Helper
 
 
   def login
-    credentials = login_form
+    credentials, validation = login_form
     @user = Services::Sessions.login(credentials)
+    # puts @user[] if @user.length == 1
     puts "Welcome back Test User"
   end
 
@@ -36,45 +37,52 @@ module Helper
   end
 
   def login_form
-    email = get_string("Email")
-    password = get_string("Password")
+    email = get_string("Email", required: true)
+    password = get_string("Password", required: true)
 
     {email: email, password: password}
   end
 
   def create_user_form
-    validation = false
-    unless validation
+ 
+    print "Email: "
+    email = gets.chomp
+    while email.empty? || !email.match?(/\w*@\w*.[a-z]{2,3}/)
+      puts "Invalid format"
       print "Email: "
-      email = gets.chomp
-      puts "Invalid format" if email.empty? || !email.match?(/\w*@\w*.[a-z]{2,3}/)
-      return validation if email.empty? || !email.match?(/\w*@\w*.[a-z]{2,3}/)
+    email = gets.chomp
+    end
 
+    print "Password: "
+    password = gets.chomp
+    while password.empty? || password.length < 6
+      puts "Minimun 6 characters"
       print "Password: "
       password = gets.chomp
-      puts "Minimun 6 characters" if password.empty? || password.length < 6
-      return validation if password.empty? || password.length < 6
+    end
 
-      print "First name: "
-      first_name = gets.chomp
-      print "Last name: "
-      last_name = gets.chomp
+    print "First name: "
+    first_name = gets.chomp
+    print "Last name: "
+    last_name = gets.chomp
+    print "Phone: "
+    phone = gets.chomp
+    until phone.match?(/^\d{9}/)
+      puts "Required format: +51 111222333 or 111222333"
       print "Phone: "
       phone = gets.chomp
-      puts "Required format: +51 111222333 or 111222333" unless phone.match?(/^\d{9}/)
-      return validation unless phone.match?(/^\d{9}/)
-      validation = true
     end
+
     full_name = [first_name, last_name].join(" ")
     puts "Welcome to Expensable #{full_name}"
 
-    return [{
+    {
       email: email,
       password: password,
       first_name: first_name,
       last_name: last_name,
       phone: phone
-    }, validation]
+    }
   end 
 
 
