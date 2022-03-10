@@ -8,6 +8,8 @@ class Expensable
   def initialize
     @user = nil
     @notes = []
+    @trash = false
+
   end
 
   def start
@@ -21,7 +23,7 @@ class Expensable
       option = gets.chomp
       case option
       when "login"
-        puts "login"
+        login
       when "create_user"
         puts create_user
       when "exit"
