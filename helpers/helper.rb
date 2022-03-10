@@ -19,7 +19,7 @@ module Helper
     credentials, validation = login_form
     @user = Services::Sessions.login(credentials)
     # puts @user[] if @user.length == 1
-    puts "Welcome back Test User"
+    puts "Welcome back #{@user[:first_name]} #{@user[:last_name]}"
   end
 
   def get_string(label, required: false)
@@ -85,5 +85,11 @@ module Helper
     }
   end 
 
+  def categories_menu
+    a = ["create", "show ID", "update ID", "delete ID"].join(" | ")
+    b = ["add-to ID", "toggle", "next", "prev", "logout"].join(" | ")
+    puts a
+    puts b
+  end
 
 end
