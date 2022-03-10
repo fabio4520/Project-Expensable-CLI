@@ -1,8 +1,15 @@
 # Start here. Happy coding!
 require_relative 'helpers/helper.rb'
+require_relative 'services/sessions.rb'
 
 class Expensable
   include Helper
+
+  def initialize
+    @user = nil
+    @notes = []
+  end
+
   def start
     welcome
     option = ""
@@ -14,7 +21,7 @@ class Expensable
       when "login"
         puts "login"
       when "create_user"
-        puts "create_user"
+        puts create_user
       when "exit"
         goodbye
       else
@@ -22,6 +29,15 @@ class Expensable
       end
     end
   end
+
+  private
+
+  def create_user
+    credentials = create_user_form
+    @user = Services::Sessions.signup(credentials)
+    p @user
+  end
+
 
 end
 
