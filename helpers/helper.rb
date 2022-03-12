@@ -1,3 +1,4 @@
+require 'terminal-table'
 module Helper
 # require_relative 'services/sessions.rb'
 
@@ -15,13 +16,6 @@ module Helper
   end
 
 
-  def login
-    credentials, validation = login_form
-    @user = Services::Sessions.login(credentials)
-    # puts @user[] if @user.length == 1
-    puts "Welcome back #{@user[:first_name]} #{@user[:last_name]}"
-  end
-
   def get_string(label, required: false)
     input = ""
 
@@ -34,6 +28,14 @@ module Helper
     end
 
     input
+  end
+
+  def print_table(title, headings, rows)
+    table = Terminal::Table.new
+    table.title = title
+    table.headings = headings
+    table.rows = rows
+    puts table
   end
 
   def login_form
@@ -88,6 +90,36 @@ module Helper
   def categories_menu
     a = ["create", "show ID", "update ID", "delete ID"]
     b = ["add-to ID", "toggle", "next", "prev", "logout"]
+    action, id = validate_menu(a,b)
+  end
+
+  def create_category_menu
+    name, transaction_type = "", ""
+    while name.empty?
+      print "Name: "
+      name = gets.chomp
+      puts "Cannot be blank" if name.empty?
+    end
+    options = ["income", "expense"]
+    until options.include?(transaction_type.downcase)
+      print "Transaction type: "
+      transaction_type = gets.chomp.downcase
+      puts "Only income or expense" unless options.include?(transaction_type.downcase)
+    end
+    return name, transaction_type
+  end
+
+  def update_category_menu
+    create_category_menu
+  end
+
+  def show_menu
+    a = ["add", "update ID", "delete ID"]
+    b = ["next", "prev", "back"]
+    action, id = validate_menu(a,b)
+  end
+
+  def validate_menu(a,b)
     action= ""
     id = nil
     options = (a.map{|string| string.delete(" ID")} + b.map{|string| string.delete(" ID")})
@@ -97,7 +129,28 @@ module Helper
       print "> "
       action, id = gets.chomp.split
     end
-    return action, id
+    return action, id.to_i
+  end
+
+  def add_transaction_menu
+    amount, date = 0, ""
+    until amount.positive?
+      print "Amount: "
+      amount = gets.chomp.to_i
+      puts "Cannot be zero" unless amount.positive?
+    end
+    until date.match?(/\d{4}-\d{2}-\d{2}/)
+      print "Date: "
+      date = gets.chomp
+      puts "Required format: YYYY-MM-DD" unless date.match?(/\d{4}-\d{2}-\d{2}/)
+    end
+    print "Notes: "
+    notes = gets.chomp
+    return amount, date, notes
+  end
+
+  def update_transaction_menu
+    add_transaction_menu
   end
 
 end
